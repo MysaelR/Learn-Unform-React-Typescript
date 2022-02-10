@@ -7,19 +7,18 @@ type Props = {
     children: ReactNode;
 }
 
-export const Theme = ({children} : Props) => {
+export const Theme = ({ children }: Props) => {
 
     return (
         <C.Container>
             <C.Area>
-                <Header/>
-
+                <Header />
                 <C.Steps>
                     <C.Sidebar>
-
+           
                     </C.Sidebar>
                     <C.Page>
-                        {Children}
+                        {children}
                     </C.Page>
                 </C.Steps>
             </C.Area>

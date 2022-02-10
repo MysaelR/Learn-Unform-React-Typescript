@@ -3,7 +3,7 @@
 //Provider: Ambiente, que dentro dele eu consigo ter acesso aos meus dados, do meu contexto
 //Hook: Vai simplificar o processo, para que nós tenhamos acesso as informações, e a trocas as informações do contexto em todas as páginas.
 
-import { createContext, ReactNode, useContext, useReducer} from 'react'; //cria o contexto, usa o contexto, e usa o reducer
+import { createContext, ReactNode, useCallback, useContext, useReducer, useState } from 'react'; //cria o contexto, usa o contexto, e usa o reducer
 
 
 type State = {
@@ -21,14 +21,14 @@ type Action = {
 
 type ContextType = {
     state: State;
-    dispatch : (action : Action) => void;
+    dispatch: (action: Action) => void;
 }
 
 type FormProviderProps = {
     children: ReactNode;
 }
 
-const initialData : State = { //dados iniciais
+const initialData: State = { //dados iniciais
     currentStep: 0,
     name: '',
     level: 0,
@@ -42,7 +42,7 @@ const FormContext = createContext<ContextType | undefined>(undefined); //
 
 //Reducer
 
-export enum FormActions{
+export enum FormActions {
     setCurrentStep,
     setName,
     setLevel,
@@ -50,32 +50,33 @@ export enum FormActions{
     setGithub
 }
 
-const formReducer = (state : State, action: Action) => { //Ela recebe uma state (os dados), e recebe uma action (que ação eu quero executar com esses dados)
-    switch(action.type){ //um switch pra ver qual ação eu vou querer realizar, o type fala o tipo de ação, exemplo: trocar o nome do usuário que está no contexto, um setName.
+const formReducer = (state: State, action: Action) => { //Ela recebe uma state (os dados), e recebe uma action (que ação eu quero executar com esses dados)
+    switch (action.type) { //um switch pra ver qual ação eu vou querer realizar, o type fala o tipo de ação, exemplo: trocar o nome do usuário que está no contexto, um setName.
         case FormActions.setCurrentStep:
-            return {...state, currentStep : action.payload};
+            return { ...state, currentStep: action.payload };
         case FormActions.setName:
-            return {...state, currentStep: action.payload};
+            return { ...state, name: action.payload };
         case FormActions.setLevel:
-            return {...state, level: action.payload};
+            return { ...state, level: action.payload };
         case FormActions.setEmail:
-            return {...state, email: action.payload};
+            return { ...state, email: action.payload };
         case FormActions.setGithub:
-            return {...state, github: action.payload};
+            return { ...state, github: action.payload };
         default:
             return state;
-        }
+    }
 }
 
 
 //Provider
 
-export const FormProvider = ({children} : FormProviderProps) => {
+export const FormProvider = ({ children }: FormProviderProps) => {
+
 
     const [state, dispatch] = useReducer(formReducer, initialData) //state tem os dados, e dispatch tem uma função que usa para executar as ações //segundo parametro são dados iniciais
-    const value =  {state, dispatch};
+    const value = { state, dispatch };
 
-    return(
+    return (
         <FormContext.Provider value={value}> {/* value é um objeto com 2 itens q precise*/}
             {children}
         </FormContext.Provider>
@@ -88,8 +89,8 @@ export const FormProvider = ({children} : FormProviderProps) => {
 export const useForm = () => {
     const context = useContext(FormContext);
 
-    if (context === undefined){
-        throw new Error ('useForm precisa ser usado dentro do FormProvider');
+    if (context === undefined) {
+        throw new Error('useForm precisa ser usado dentro do FormProvider');
     }
     return context;
 }
